@@ -116,6 +116,7 @@ class FusedAdam(torch.optim.Optimizer):
             # create lists for multi-tensor apply
             g_16, p_16, m_16, v_16 = [], [], [], []
             g_32, p_32, m_32, v_32 = [], [], [], []
+            g_64, p_64, m_64, v_64 = [], [], [], []
 
             for p in group['params']:
                 if p.grad is None:
@@ -141,8 +142,13 @@ class FusedAdam(torch.optim.Optimizer):
                     p_32.append(p.data)
                     m_32.append(state['exp_avg'])
                     v_32.append(state['exp_avg_sq'])
+                elif p.dtype == torch.float64:
+                    g_64.append(p.grad.data)
+                    p_64.append(p.data)
+                    m_64.append(state['exp_avg'])
+                    v_64.append(state['exp_avg_sq'])
                 else:
-                    raise RuntimeError('FusedAdam only support fp16 and fp32.')
+                    raise RuntimeError('FusedAdam only support fp16, fp32 and fp64.')
 
             if(len(g_16) > 0):
                 multi_tensor_applier(self.multi_tensor_adam,
@@ -160,6 +166,19 @@ class FusedAdam(torch.optim.Optimizer):
                 multi_tensor_applier(self.multi_tensor_adam,
                                      self._dummy_overflow_buf,
                                      [g_32, p_32, m_32, v_32],
+                                     group['lr'],
+                                     beta1,
+                                     beta2,
+                                     group['eps'],
+                                     group['step'],
+                                     self.adam_w_mode,
+                                     bias_correction,
+                                     group['weight_decay'])
+
+            if(len(g_64) > 0):
+                multi_tensor_applier(self.multi_tensor_adam,
+                                     self._dummy_overflow_buf,
+                                     [g_64, p_64, m_64, v_64],
                                      group['lr'],
                                      beta1,
                                      beta2,
