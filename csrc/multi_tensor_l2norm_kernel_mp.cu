@@ -61,7 +61,8 @@ struct L2NormFunctor
     }
 
     // to make things simple, we put aligned case in a different code path
-    if(n % ILP == 0 && chunk_size % ILP == 0 && is_aligned(x))
+    // debug
+    if(n % ILP == 0 && chunk_size % ILP == 0 && is_aligned(x) && false)
     {
       for(int i_start = threadIdx.x; i_start*ILP < n && i_start*ILP < chunk_size; i_start += blockDim.x)
       {

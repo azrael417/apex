@@ -94,12 +94,13 @@ struct LAMBStage1Functor
     MATH_T r_m[ILP];
     MATH_T r_v[ILP];
     // to make things simple, we put aligned case in a different code path
+    // DEBUG
     if(n % ILP == 0 &&
        chunk_size % ILP == 0 &&
        is_aligned(g) &&
        is_aligned(p) &&
        is_aligned(m) &&
-       is_aligned(v))
+       is_aligned(v) && false)
     {
       T l_g[ILP];
       param_t l_p[ILP];
@@ -296,6 +297,11 @@ struct LAMBStage2Functor
     if (N == 3) {
       can_use_aligned_path = can_use_aligned_path && is_aligned(out_p);
     }
+
+    // debug
+    can_use_aligned_path = false;
+    // debug
+    
     if(can_use_aligned_path)
     {
       param_t r_p[ILP];
