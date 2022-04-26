@@ -75,6 +75,10 @@ struct LAMBStage1Functor
 
     float clipped_global_grad_norm = (*global_grad_norm) > (*max_global_grad_norm) ? (*global_grad_norm) / (*max_global_grad_norm) : 1.0f;
 
+    //debug
+    clipped_global_grad_norm = 1.0f;
+    //debug
+
     T* g = (T*)tl.addresses[0][tensor_loc];
     g += chunk_idx*chunk_size;
 
@@ -275,6 +279,12 @@ struct LAMBStage2Functor
     {
       float param_norm = per_tensor_param_norm[tensor_num];
       float update_norm = per_tensor_update_norm[tensor_num];
+
+      //debug
+      param_norm = 1.0f;
+      update_norm = 1.0f;
+      //debug
+      
       ratio = (update_norm != 0.0f && param_norm != 0.0f) ? *learning_rate * (param_norm / update_norm) : *learning_rate;
     }
 
