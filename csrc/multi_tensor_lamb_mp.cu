@@ -205,7 +205,6 @@ struct LAMBStage1Functor
             r_v[ii] = MATH_T(0);
           }
         }
-	if(i_start + threadIdx.x == 0) printf("grads %f %f %f %f\n", r_g[0], r_g[1], r_g[2], r_g[3]);
 	
 #pragma unroll
         for(int ii = 0; ii < ILP; ii++)
