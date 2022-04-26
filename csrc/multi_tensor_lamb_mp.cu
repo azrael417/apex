@@ -405,6 +405,8 @@ void multi_tensor_lamb_mp_cuda(
   assert(n_tensors == 4 || n_tensors == 5);
   using namespace at;
 
+  printf("n_tensors %i", n_tensors);
+  
   bool use_nvlamb = use_nvlamb_python.has_value() ? use_nvlamb_python.value() : false;
 
   // note(mkozuki): move bias handling below to functor
